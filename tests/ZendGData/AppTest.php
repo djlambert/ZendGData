@@ -60,7 +60,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
                 true);
 
         $this->adapter = new TestAsset\MockHttpClient();
-        $this->client = new GData\HttpClient();
+        $this->client = new ZendGData\HttpClient();
         $this->client->setAdapter($this->adapter);
         $this->service = new App($this->client);
     }

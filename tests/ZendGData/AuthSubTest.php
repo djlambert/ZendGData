@@ -31,7 +31,7 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
 
     public function testNormalGetAuthSubTokenUri()
     {
-        $uri = GData\AuthSub::getAuthSubTokenUri(
+        $uri = ZendGData\AuthSub::getAuthSubTokenUri(
                 'http://www.example.com/foo.php', //next
                 'http://www.google.com/calendar/feeds', //scope
                 0, //secure
@@ -46,7 +46,7 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAuthSubTokenUriModifiedBase()
     {
-        $uri = GData\AuthSub::getAuthSubTokenUri(
+        $uri = ZendGData\AuthSub::getAuthSubTokenUri(
                 'http://www.example.com/foo.php', //next
                 'http://www.google.com/calendar/feeds', //scope
                 0, //secure
@@ -65,7 +65,7 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         if (!extension_loaded('openssl')) {
             $this->markTestSkipped('The openssl extension is not available');
         } else {
-            $c = new GData\HttpClient();
+            $c = new ZendGData\HttpClient();
             $c->setAuthSubPrivateKeyFile("Zend/GData/_files/RsaKey.pem",
                                          null, true);
             $c->setAuthSubToken('abcdefg');
@@ -113,7 +113,7 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         if (!extension_loaded('openssl')) {
             $this->markTestSkipped('The openssl extension is not available');
         } else {
-            $c = new GData\HttpClient();
+            $c = new ZendGData\HttpClient();
             $c->setAuthSubPrivateKeyFile("zendauthsubfilenotfound",  null, true);
         }
     }
@@ -122,11 +122,11 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         $adapter = new AdapterTest();
         $adapter->setResponse("HTTP/1.1 200 OK\r\n\r\nToken={$this->token}\r\nExpiration=20201004T123456Z");
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $respToken = GData\AuthSub::getAuthSubSessionToken($this->token, $client);
+        $respToken = ZendGData\AuthSub::getAuthSubSessionToken($this->token, $client);
         $this->assertEquals($this->token, $respToken);
     }
 
@@ -138,11 +138,11 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         $adapter = new AdapterTest();
         $adapter->setResponse("HTTP/1.1 500 Internal Server Error\r\n\r\nInternal Server Error");
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $newtok = GData\AuthSub::getAuthSubSessionToken($this->token, $client);
+        $newtok = ZendGData\AuthSub::getAuthSubSessionToken($this->token, $client);
     }
 
     /**
@@ -153,11 +153,11 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         $adapter = new AdapterTest();
         $adapter->setNextRequestWillFail(true);
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $newtok = GData\AuthSub::getAuthSubSessionToken($this->token, $client);
+        $newtok = ZendGData\AuthSub::getAuthSubSessionToken($this->token, $client);
     }
 
     public function testAuthSubRevokeTokenReceivesSuccessfulResult()
@@ -165,11 +165,11 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         $adapter = new AdapterTest();
         $adapter->setResponse("HTTP/1.1 200 OK");
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $revoked = GData\AuthSub::AuthSubRevokeToken($this->token, $client);
+        $revoked = ZendGData\AuthSub::AuthSubRevokeToken($this->token, $client);
         $this->assertTrue($revoked);
     }
 
@@ -178,11 +178,11 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         $adapter = new AdapterTest();
         $adapter->setResponse("HTTP/1.1 500 Not Successful");
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $revoked = GData\AuthSub::AuthSubRevokeToken($this->token, $client);
+        $revoked = ZendGData\AuthSub::AuthSubRevokeToken($this->token, $client);
         $this->assertFalse($revoked);
     }
 
@@ -194,11 +194,11 @@ class AuthSubTest extends \PHPUnit_Framework_TestCase
         $adapter = new AdapterTest();
         $adapter->setNextRequestWillFail(true);
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $revoked = GData\AuthSub::AuthSubRevokeToken($this->token, $client);
+        $revoked = ZendGData\AuthSub::AuthSubRevokeToken($this->token, $client);
     }
 
     public function testGetAuthSubTokenInfoReceivesSuccessfulResult()
@@ -210,11 +210,11 @@ Target=http://example.com
 Scope=http://example.com
 Secure=false");
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $respBody = GData\AuthSub::getAuthSubTokenInfo($this->token, $client);
+        $respBody = ZendGData\AuthSub::getAuthSubTokenInfo($this->token, $client);
 
         $this->assertContains("Target=http://example.com", $respBody);
         $this->assertContains("Scope=http://example.com", $respBody);
@@ -229,17 +229,17 @@ Secure=false");
         $adapter = new AdapterTest();
         $adapter->setNextRequestWillFail(true);
 
-        $client = new GData\HttpClient();
+        $client = new ZendGData\HttpClient();
         $client->setUri('http://example.com/AuthSub');
         $client->setAdapter($adapter);
 
-        $revoked = GData\AuthSub::getAuthSubTokenInfo($this->token, $client);
+        $revoked = ZendGData\AuthSub::getAuthSubTokenInfo($this->token, $client);
     }
 
     public function testGetHttpClientProvidesNewClientWhenNullPassed()
     {
-        $client = GData\AuthSub::getHttpClient($this->token);
-        $this->assertTrue($client instanceof GData\HttpClient );
+        $client = ZendGData\AuthSub::getHttpClient($this->token);
+        $this->assertTrue($client instanceof ZendGData\HttpClient );
         $this->assertEquals($this->token, $client->getAuthSubToken());
     }
 }

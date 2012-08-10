@@ -49,7 +49,7 @@ class EntryTest extends \PHPUnit_Framework_TestCase
         $this->entry = new App\Entry();
 
         $this->adapter = new \ZendGDataTest\TestAsset\MockHttpClient();
-        $this->client = new GData\HttpClient();
+        $this->client = new ZendGData\HttpClient();
         $this->client->setAdapter($this->adapter);
         $this->service = new App($this->client);
     }
